@@ -2,6 +2,8 @@
 # CCR + OpenRouter Professional Setup Script for Linux/macOS/WSL
 # https://github.com/musistudio/claude-code-router
 
+set -e
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -15,6 +17,39 @@ step() { echo -e "${CYAN}[*] $1${NC}"; }
 success() { echo -e "${GREEN}[OK] $1${NC}"; }
 warn() { echo -e "${YELLOW}[!] $1${NC}"; }
 fail() { echo -e "${RED}[X] $1${NC}"; }
+
+# Function to safely read from terminal
+read_from_terminal() {
+    local prompt="$1"
+    local varname="$2"
+    local result=""
+    
+    echo -n "$prompt"
+    
+    # Try reading from /dev/tty (works when script is piped)
+    if [ -t 0 ]; then
+        # stdin is a terminal, read normally
+        read -r result
+    elif [ -e /dev/tty ]; then
+        # stdin is piped, but /dev/tty exists
+        read -r result < /dev/tty
+    else
+        # No terminal available
+        echo ""
+        fail "Cannot read input: No terminal available."
+        fail "Please download and run the script directly instead:"
+        echo "  curl -fsSL https://raw.githubusercontent.com/iamKhan79690/OpenRouter-CCR-SETUP/main/install.sh -o install.sh"
+        echo "  chmod +x install.sh"
+        echo "  ./install.sh"
+        exit 1
+    fi
+    
+    # Clean the input (remove Windows line endings and trim whitespace)
+    result=$(printf '%s' "$result" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    
+    # Export to the variable name
+    eval "$varname=\"\$result\""
+}
 
 clear
 header "CCR + OpenRouter Setup for Linux/macOS"
@@ -36,9 +71,7 @@ if ! command -v node &> /dev/null; then
     echo -e "  Or visit: https://nodejs.org/"
     echo ""
     
-    echo -n "Would you like to try installing via package manager? (y/N): "
-    read -r install_choice < /dev/tty
-    install_choice=$(echo "$install_choice" | tr -d '\r' | xargs)
+    read_from_terminal "Would you like to try installing via package manager? (y/N): " install_choice
     if [[ $install_choice == "y" ]]; then
         if command -v apt &> /dev/null; then
             step "Installing Node.js via apt..."
@@ -95,11 +128,7 @@ echo ""
 
 VALID_KEY=false
 while [ "$VALID_KEY" = false ]; do
-    # Read specifically from /dev/tty to handle curl | bash pipes
-    # tr -d '\r' is used to clean up Windows-style line endings from pastes
-    echo -n "Paste your OpenRouter API Key: "
-    read -r API_KEY < /dev/tty
-    API_KEY=$(echo "$API_KEY" | tr -d '\r' | xargs)
+    read_from_terminal "Paste your OpenRouter API Key: " API_KEY
     
     if [ -z "$API_KEY" ]; then
         warn "API Key cannot be empty. Please try again."
@@ -108,9 +137,7 @@ while [ "$VALID_KEY" = false ]; do
     
     if [[ ! $API_KEY =~ ^sk-or-v1- ]]; then
         warn "This key doesn't start with 'sk-or-v1-'."
-        echo -n "Use it anyway? (y/N): "
-        read -r confirm < /dev/tty
-        confirm=$(echo "$confirm" | tr -d '\r' | xargs)
+        read_from_terminal "Use it anyway? (y/N): " confirm
         if [[ $confirm == "y" ]]; then
             VALID_KEY=true
         fi
