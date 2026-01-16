@@ -93,7 +93,9 @@ echo ""
 
 VALID_KEY=false
 while [ "$VALID_KEY" = false ]; do
-    read -p "Paste your OpenRouter API Key: " API_KEY
+    # Must read from /dev/tty when script is piped via curl | bash
+    echo -n "Paste your OpenRouter API Key: "
+    read API_KEY < /dev/tty
     
     if [ -z "$API_KEY" ]; then
         warn "API Key cannot be empty. Please try again."
@@ -102,7 +104,8 @@ while [ "$VALID_KEY" = false ]; do
     
     if [[ ! $API_KEY =~ ^sk-or-v1- ]]; then
         warn "This key doesn't start with 'sk-or-v1-'."
-        read -p "Use it anyway? (y/N): " confirm
+        echo -n "Use it anyway? (y/N): "
+        read confirm < /dev/tty
         if [[ $confirm == "y" ]]; then
             VALID_KEY=true
         fi
