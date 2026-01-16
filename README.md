@@ -1,103 +1,69 @@
-# Claude Code Router (CCR) Setup with OpenRouter
+# 🚀 Professional CCR Setup for OpenRouter
 
-A complete guide and automated scripts to set up Claude Code Router with OpenRouter for **free AI model access** on Windows, Linux, and WSL Ubuntu.
+[![GitHub stars](https://img.shields.io/github/stars/iamKhan79690/OpenRouter-CCR-SETUP?style=flat-square)](https://github.com/iamKhan79690/OpenRouter-CCR-SETUP/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/iamKhan79690/OpenRouter-CCR-SETUP?style=flat-square)](https://github.com/iamKhan79690/OpenRouter-CCR-SETUP/issues)
+[![License](https://img.shields.io/github/license/iamKhan79690/OpenRouter-CCR-SETUP?style=flat-square)](https://github.com/iamKhan79690/OpenRouter-CCR-SETUP/blob/main/LICENSE)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square)](https://github.com/iamKhan79690/OpenRouter-CCR-SETUP/graphs/commit-activity)
+
+**Claude Code Router (CCR)** is a powerful tool to manage AI models. This repository provides an **optimized, student-friendly** configuration to use high-quality AI models via **OpenRouter** for **ZERO COST**.
 
 ---
 
-## 🚀 Quick Install (One Command)
+## 🌟 Why This Project?
 
-### Windows (PowerShell)
+Most students struggle with complex API configurations. This project simplifies everything into **one command**.
+*   **Cost-Efficient**: Uses high-performance free models on OpenRouter.
+*   **Simple**: Automated scripts for all Operating Systems.
+*   **Secure**: Uses `.env` files to keep your API keys safe.
+
+---
+
+## ⚡ Quick One-Click Setup
+
+The fastest way to get started. Choose your OS:
+
+### 🪟 Windows (PowerShell)
+1. Open PowerShell.
+2. Copy and Paste:
 ```powershell
-irm https://raw.githubusercontent.com/iamKhan79690/ccr-openrouter-setup/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/iamKhan79690/OpenRouter-CCR-SETUP/main/install.ps1 | iex
 ```
 
-### Linux / Ubuntu / WSL
+### 🐧 Linux / WSL / macOS (Bash)
+1. Open Terminal.
+2. Copy and Paste:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/iamKhan79690/ccr-openrouter-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/iamKhan79690/OpenRouter-CCR-SETUP/main/install.sh | bash
 ```
 
-### macOS
-```bash
-curl -fsSL https://raw.githubusercontent.com/iamKhan79690/ccr-openrouter-setup/main/install.sh | bash
-```
-
-> **Tip**: These commands work immediately after you clone this repo!
-
 ---
 
-## 📋 What These Scripts Do
+## 📖 Step-by-Step Manual Installation
 
-1. ✅ Check for Node.js installation
-2. ✅ Install Claude Code Router globally via npm
-3. ✅ Create the configuration directory (`~/.claude-code-router`)
-4. ✅ Set up the environment file with your OpenRouter API key
-5. ✅ Create a complete `config.json` with OpenRouter integration
-6. ✅ Configure a free model (Xiaomi MiMo V2 Flash)
-
----
-
-# 📖 Manual Setup Guide
-
-Choose your platform below:
-
----
-
-## 🪟 Windows Manual Setup
-
-### Prerequisites
-- **Node.js** (v18+) - [Download here](https://nodejs.org/)
-- **OpenRouter API Key** - [Get one FREE here](https://openrouter.ai/keys)
+If you prefer to do it manually, follow these simple steps.
 
 ### Step 1: Install Node.js
+Ensure you have Node.js installed on your system.
+*   **Windows**: Download from [nodejs.org](https://nodejs.org/)
+*   **Ubuntu/WSL**: `sudo apt install nodejs npm`
 
-1. Download the LTS version from [nodejs.org](https://nodejs.org/)
-2. Run the installer
-3. Verify installation:
-```powershell
-node --version
-npm --version
-```
-
-### Step 2: Install Claude Code Router
-
-Open PowerShell and run:
-```powershell
+### Step 2: Install CCR Globally
+Run the following command in your terminal:
+```bash
 npm install -g @anthropics/claude-code-router
 ```
 
-### Step 3: Create Configuration Directory
-
-```powershell
-mkdir "$env:USERPROFILE\.claude-code-router" -Force
-```
-
-### Step 4: Get Your OpenRouter API Key
-
-1. Go to [openrouter.ai/keys](https://openrouter.ai/keys)
-2. Sign up or log in
-3. Create a new API key
-4. Copy the key (starts with `sk-or-v1-`)
-
-### Step 5: Create Environment File
-
-Create `C:\Users\YOUR_USERNAME\.claude-code-router\.env`:
-```powershell
-notepad "$env:USERPROFILE\.claude-code-router\.env"
-```
-
-Add this content (replace with your actual key):
+### Step 3: Configure Your API Key
+1. Create a folder named `.claude-code-router` in your user directory.
+2. Inside that folder, create a file named `.env`.
+3. Add your OpenRouter key:
 ```env
-OPENROUTER_API_KEY=sk-or-v1-YOUR_API_KEY_HERE
+OPENROUTER_API_KEY=your_key_here
 ```
 
-### Step 6: Create Configuration File
+### Step 4: Add Configuration File
+Create `config.json` in the same `.claude-code-router` folder with this content:
 
-Create `C:\Users\YOUR_USERNAME\.claude-code-router\config.json`:
-```powershell
-notepad "$env:USERPROFILE\.claude-code-router\config.json"
-```
-
-Add this content:
 ```json
 {
   "Provider": {
@@ -111,268 +77,48 @@ Add this content:
     }
   },
   "Router": {
-    "default": "openrouter,xiaomi/mimo-v2-flash:free",
-    "background": "",
-    "think": "",
-    "longContext": "",
-    "titleGen": "",
-    "searchTool": ""
+    "default": "openrouter,xiaomi/mimo-v2-flash:free"
   }
 }
 ```
 
-### Step 7: Verify Installation
+---
 
-```powershell
-ccr --version
-```
+## 🎨 Recommended Free Models
+
+| Provider | Model Name | Description |
+| :--- | :--- | :--- |
+| **Xiaomi** | `xiaomi/mimo-v2-flash:free` | Fast and efficient (Default) |
+| **Meta** | `meta-llama/llama-3.3-70b-instruct:free` | High intelligence |
+| **Google** | `google/gemma-2-9b-it:free` | Concise and clear |
 
 ---
 
-## 🐧 Ubuntu / WSL Manual Setup
+## 🛠️ Troubleshooting
 
-### Prerequisites
-- **Ubuntu 20.04+** or **WSL2 with Ubuntu**
-- **OpenRouter API Key** - [Get one FREE here](https://openrouter.ai/keys)
+> [!TIP]
+> **"Command not found: ccr"**
+> Restart your terminal after installation! Windows users may need to run `refreshenv` or close/open PowerShell.
 
-### Step 1: Update System Packages
-
-```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-### Step 2: Install Node.js
-
-**Option A: Using NodeSource (Recommended)**
-```bash
-# Install Node.js 20.x
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-```
-
-**Option B: Using nvm (Node Version Manager)**
-```bash
-# Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-# Reload shell
-source ~/.bashrc
-
-# Install Node.js
-nvm install 20
-nvm use 20
-```
-
-Verify installation:
-```bash
-node --version
-npm --version
-```
-
-### Step 3: Install Claude Code Router
-
-```bash
-sudo npm install -g @anthropics/claude-code-router
-```
-
-Or without sudo (if using nvm):
-```bash
-npm install -g @anthropics/claude-code-router
-```
-
-### Step 4: Create Configuration Directory
-
-```bash
-mkdir -p ~/.claude-code-router
-```
-
-### Step 5: Get Your OpenRouter API Key
-
-1. Go to [openrouter.ai/keys](https://openrouter.ai/keys)
-2. Sign up or log in
-3. Create a new API key
-4. Copy the key (starts with `sk-or-v1-`)
-
-### Step 6: Create Environment File
-
-```bash
-nano ~/.claude-code-router/.env
-```
-
-Add this content (replace with your actual key):
-```env
-OPENROUTER_API_KEY=sk-or-v1-YOUR_API_KEY_HERE
-```
-
-Save: `Ctrl+O`, then `Enter`, then `Ctrl+X`
-
-Secure the file:
-```bash
-chmod 600 ~/.claude-code-router/.env
-```
-
-### Step 7: Create Configuration File
-
-```bash
-nano ~/.claude-code-router/config.json
-```
-
-Add this content:
-```json
-{
-  "Provider": {
-    "openrouter": {
-      "type": "OpenAIAzure",
-      "model": "xiaomi/mimo-v2-flash:free",
-      "config": {
-        "apiVersion": "2024-10-21",
-        "baseUrl": "https://openrouter.ai/api/v1"
-      }
-    }
-  },
-  "Router": {
-    "default": "openrouter,xiaomi/mimo-v2-flash:free",
-    "background": "",
-    "think": "",
-    "longContext": "",
-    "titleGen": "",
-    "searchTool": ""
-  }
-}
-```
-
-Save: `Ctrl+O`, then `Enter`, then `Ctrl+X`
-
-### Step 8: Verify Installation
-
-```bash
-ccr --version
-```
-
----
-
-## 🍎 macOS Manual Setup
-
-### Prerequisites
-- **Homebrew** (recommended) - [Install here](https://brew.sh/)
-- **OpenRouter API Key** - [Get one FREE here](https://openrouter.ai/keys)
-
-### Step 1: Install Node.js
-
-```bash
-brew install node
-```
-
-Or download from [nodejs.org](https://nodejs.org/)
-
-### Step 2: Install Claude Code Router
-
-```bash
-npm install -g @anthropics/claude-code-router
-```
-
-### Step 3: Create Configuration Directory
-
-```bash
-mkdir -p ~/.claude-code-router
-```
-
-### Step 4-7: Same as Ubuntu
-
-Follow Steps 5-8 from the Ubuntu section above.
-
----
-
-## 🎯 Available Free Models
-
-You can swap the model in your config with any of these free options:
-
-| Model | Config Value |
-|-------|--------------|
-| **Xiaomi MiMo V2 Flash** | `xiaomi/mimo-v2-flash:free` |
-| Meta Llama 3.3 70B | `meta-llama/llama-3.3-70b-instruct:free` |
-| Google Gemma 2 9B | `google/gemma-2-9b-it:free` |
-| Qwen 2.5 72B | `qwen/qwen-2.5-72b-instruct:free` |
-| DeepSeek R1 Distill | `deepseek/deepseek-r1-distill-llama-70b:free` |
-
-To change models, update **both** of these in `config.json`:
-1. `Provider.openrouter.model`
-2. `Router.default`
-
----
-
-## 🔧 Configuration Options
-
-| Router Option | Description |
-|---------------|-------------|
-| `default` | Main model for general queries |
-| `background` | Model for background tasks |
-| `think` | Model for reasoning/thinking |
-| `longContext` | Model for long context handling |
-| `titleGen` | Model for title generation |
-| `searchTool` | Model for search operations |
-
-Leave options empty (`""`) to use the default model.
-
----
-
-## 🐛 Troubleshooting
-
-### "Expected comma" Error in config.json
-- Ensure all keys and string values use double quotes `"`
-- Check for trailing commas (not allowed in JSON)
-- Verify brackets `{}` are properly matched
-
-### "API Key not found" Error
-- Verify `.env` file exists in `~/.claude-code-router/`
-- Ensure the key starts with `sk-or-v1-`
-- Check there are no extra spaces around the key
-
-### "Model not found" Error
-- Verify the model name is correct
-- Some models may be temporarily unavailable
-- Try a different free model from the list above
-
-### Permission Denied (Linux/macOS)
-```bash
-sudo chown -R $USER ~/.claude-code-router
-chmod 600 ~/.claude-code-router/.env
-```
-
-### Command Not Found: ccr
-- Restart your terminal
-- Verify npm global bin is in PATH:
-```bash
-echo $PATH | grep npm
-```
-
----
-
-## 📁 Project Structure
-
-```
-ccr-openrouter-setup/
-├── README.md           # This guide
-├── install.ps1         # Windows PowerShell installer
-├── install.sh          # Linux/macOS/WSL Bash installer
-├── config.json         # Sample configuration file
-├── .env.example        # Sample environment file
-├── .gitignore          # Git ignore rules
-└── LICENSE             # MIT License
-```
-
----
-
-## 📜 License
-
-MIT License - Feel free to use and modify!
+> [!IMPORTANT]
+> **JSON Errors?**
+> Ensure your `config.json` doesn't have a trailing comma at the end of the last line.
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
+We welcome contributions!
+1. Fork the repo.
+2. Create your branch.
+3. Submit a Pull Request.
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+Developed with ❤️ for Students by [iamKhan79690](https://github.com/iamKhan79690)
