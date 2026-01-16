@@ -36,7 +36,9 @@ if ! command -v node &> /dev/null; then
     echo -e "  Or visit: https://nodejs.org/"
     echo ""
     
-    read -p "Would you like to try installing via package manager? (y/N): " install_choice
+    echo -n "Would you like to try installing via package manager? (y/N): "
+    read -r install_choice < /dev/tty
+    install_choice=$(echo "$install_choice" | tr -d '\r' | xargs)
     if [[ $install_choice == "y" ]]; then
         if command -v apt &> /dev/null; then
             step "Installing Node.js via apt..."
@@ -91,13 +93,13 @@ echo -e "${YELLOW}Get your API key from: https://openrouter.ai/keys${NC}"
 echo -e "${GRAY}Your key should start with: sk-or-v1-${NC}"
 echo ""
 
-# CRITICAL: Redirect stdin from terminal when script is piped via curl | bash
-# Without this, read will try to read from the curl pipe instead of user input
-exec < /dev/tty
-
 VALID_KEY=false
 while [ "$VALID_KEY" = false ]; do
-    read -p "Paste your OpenRouter API Key: " API_KEY
+    # Read specifically from /dev/tty to handle curl | bash pipes
+    # tr -d '\r' is used to clean up Windows-style line endings from pastes
+    echo -n "Paste your OpenRouter API Key: "
+    read -r API_KEY < /dev/tty
+    API_KEY=$(echo "$API_KEY" | tr -d '\r' | xargs)
     
     if [ -z "$API_KEY" ]; then
         warn "API Key cannot be empty. Please try again."
@@ -106,7 +108,9 @@ while [ "$VALID_KEY" = false ]; do
     
     if [[ ! $API_KEY =~ ^sk-or-v1- ]]; then
         warn "This key doesn't start with 'sk-or-v1-'."
-        read -p "Use it anyway? (y/N): " confirm
+        echo -n "Use it anyway? (y/N): "
+        read -r confirm < /dev/tty
+        confirm=$(echo "$confirm" | tr -d '\r' | xargs)
         if [[ $confirm == "y" ]]; then
             VALID_KEY=true
         fi
