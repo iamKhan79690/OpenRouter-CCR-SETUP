@@ -1,0 +1,20 @@
+{
+    "Provider": {
+        "openrouter": {
+            "type": "OpenAIAzure",
+            "model": "xiaomi/mimo-v2-flash:free",
+            "config": {
+                "apiVersion": "2024-10-21",
+                "baseUrl": "https://openrouter.ai/api/v1"
+            }
+        }
+    },
+    "Router": {
+        "default": "openrouter,xiaomi/mimo-v2-flash:free",
+        "background": "",
+        "think": "",
+        "longContext": "",
+        "titleGen": "",
+        "searchTool": ""
+    }
+}
