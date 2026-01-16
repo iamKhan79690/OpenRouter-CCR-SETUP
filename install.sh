@@ -14,6 +14,55 @@ success() { echo -e "${GREEN}[✓] $1${NC}"; }
 warn() { echo -e "${YELLOW}[!] $1${NC}"; }
 fail() { echo -e "${RED}[✗] $1${NC}"; }
 
+# Function for countdown input
+get_input_timeout() {
+    local prompt="$1"
+    local timeout=$2
+    local start_time=$(date +%s)
+    local input=""
+
+    echo -ne "$prompt"
+    
+    while true; do
+        local now=$(date +%s)
+        local elapsed=$((now - start_time))
+        local remaining=$((timeout - elapsed))
+
+        if [ $remaining -le 0 ]; then
+            echo -e "\n"
+            return 1
+        fi
+
+        # Format time
+        local m=$((remaining / 60))
+        local s=$((remaining % 60))
+        local timer=$(printf " [%d:%02d remaining] " $m $s)
+
+        # Show timer and wait for 1 char of input
+        echo -ne "\033[s$timer\033[u"
+        if read -s -n 1 -t 1 char; then
+            if [[ $char == $'\0' || $char == "" ]]; then
+                # Enter pressed
+                echo -e ""
+                echo "$input"
+                return 0
+            elif [[ $char == $'\177' ]]; then
+                # Backspace
+                if [ ${#input} -gt 0 ]; then
+                    input="${input%?}"
+                    echo -ne "\b \b"
+                fi
+            else
+                input+="$char"
+                echo -ne "*"
+            fi
+        fi
+        # Clear timer string area before next loop
+        local spaces=$(printf "%${#timer}s")
+        echo -ne "\033[s$spaces\033[u"
+    done
+}
+
 clear
 header "Claude Code Router (CCR) + OpenRouter Auto-Setup"
 echo -e "Welcome student! Let's get your AI environment ready. 🚀"
@@ -37,21 +86,32 @@ CCR_DIR="$HOME/.claude-code-router"
 mkdir -p "$CCR_DIR"
 success "Config directory set: $CCR_DIR"
 
-# Step 4: API Key
+# Step 4: API Key with 15-minute countdown
 header "API KEY CONFIGURATION"
 echo -e "${YELLOW}Get your key from: https://openrouter.ai/keys${NC}"
-read -p "Paste your OpenRouter API Key (starts with sk-or-v1-): " API_KEY
+echo -e "Note: You have 15 minutes to paste your key before this script times out."
 
-if [[ ! $API_KEY =~ ^sk-or-v1- ]]; then
-    warn "Wait! That doesn't look like a valid OpenRouter key."
-    read -p "Are you sure you want to use it? (y/N): " confirm
-    if [[ $confirm != "y" ]]; then exit 1; fi
-fi
+VALID_KEY=false
+while [ "$VALID_KEY" = false ]; do
+    API_KEY=$(get_input_timeout "Paste your OpenRouter API Key (starts with sk-or-v1-): " 900)
+    
+    if [ $? -ne 0 ]; then
+        fail "Timeout reached! Script cancelled."
+        exit 1
+    fi
 
-# Save .env
-echo "OPENROUTER_API_KEY=$API_KEY" > "$CCR_DIR/.env"
-chmod 600 "$CCR_DIR/.env"
-success "API Key saved securely in .env"
+    if [[ ! $API_KEY =~ ^sk-or-v1- ]]; then
+        warn "Wait! That doesn't look like a valid OpenRouter key (it should start with sk-or-v1-)."
+        read -p "Are you sure you want to use it anyway? (y/N): " confirm
+        if [[ $confirm == "y" ]]; then 
+            VALID_KEY=true
+        else
+            echo -e "${CYAN}Please try again...${NC}"
+        fi
+    else
+        VALID_KEY=true
+    fi
+done
 
 # Step 5: config.json
 cat > "$CCR_DIR/config.json" << EOF
@@ -62,7 +122,8 @@ cat > "$CCR_DIR/config.json" << EOF
       "model": "xiaomi/mimo-v2-flash:free",
       "config": {
         "apiVersion": "2024-10-21",
-        "baseUrl": "https://openrouter.ai/api/v1"
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "apiKey": "$API_KEY"
       }
     }
   },
@@ -76,7 +137,8 @@ cat > "$CCR_DIR/config.json" << EOF
   }
 }
 EOF
-success "Configuration file created successfully."
+chmod 600 "$CCR_DIR/config.json"
+success "Configuration file created successfully at $CCR_DIR/config.json"
 
 header "SETUP COMPLETE!"
 echo -e "${GREEN}You are now ready to use Claude Code Router! 🎉${NC}"

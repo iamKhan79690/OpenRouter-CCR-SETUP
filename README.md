@@ -14,7 +14,7 @@
 Most students struggle with complex API configurations. This project simplifies everything into **one command**.
 *   **Cost-Efficient**: Uses high-performance free models on OpenRouter.
 *   **Simple**: Automated scripts for all Operating Systems.
-*   **Secure**: Uses `.env` files to keep your API keys safe.
+*   **User-Friendly**: Includes a 15-minute countdown for easy API key entry.
 
 ---
 
@@ -22,7 +22,7 @@ Most students struggle with complex API configurations. This project simplifies 
 
 The fastest way to get started. Choose your OS:
 
-### 🪟 Windows (PowerShell)
+### 🪟 Windows (Powershell)
 1. Open PowerShell.
 2. Copy and Paste:
 ```powershell
@@ -55,14 +55,8 @@ npm install -g @anthropics/claude-code-router
 
 ### Step 3: Configure Your API Key
 1. Create a folder named `.claude-code-router` in your user directory.
-2. Inside that folder, create a file named `.env`.
-3. Add your OpenRouter key:
-```env
-OPENROUTER_API_KEY=your_key_here
-```
-
-### Step 4: Add Configuration File
-Create `config.json` in the same `.claude-code-router` folder with this content:
+2. Inside that folder, create a file named `config.json`.
+3. Add your configuration and OpenRouter key:
 
 ```json
 {
@@ -72,7 +66,8 @@ Create `config.json` in the same `.claude-code-router` folder with this content:
       "model": "xiaomi/mimo-v2-flash:free",
       "config": {
         "apiVersion": "2024-10-21",
-        "baseUrl": "https://openrouter.ai/api/v1"
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "apiKey": "your_sk_or_v1_key_here"
       }
     }
   },
@@ -98,11 +93,11 @@ Create `config.json` in the same `.claude-code-router` folder with this content:
 
 > [!TIP]
 > **"Command not found: ccr"**
-> Restart your terminal after installation! Windows users may need to run `refreshenv` or close/open PowerShell.
+> Restart your terminal after installation! Windows users may need to close and reopen PowerShell.
 
 > [!IMPORTANT]
-> **JSON Errors?**
-> Ensure your `config.json` doesn't have a trailing comma at the end of the last line.
+> **API Key Format**
+> Ensure your API key starts with `sk-or-v1-`. The scripts will warn you if it doesn't match this pattern but will allow you to continue if you are sure.
 
 ---
 
