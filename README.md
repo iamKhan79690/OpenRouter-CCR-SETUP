@@ -64,9 +64,10 @@ Or use `ccr ui` for a web-based configuration interface.
 
 | Model | Best For |
 |-------|----------|
-| `meta-llama/llama-3.3-70b-instruct:free` | Default - High intelligence |
-| `qwen/qwen3-coder:free` | Code generation |
+| `qwen/qwen3-coder:free` | **Default** - Code generation |
+| `qwen/qwen3-14b:free` | General purpose |
 | `google/gemini-2.0-flash-exp:free` | Fast responses |
+| `meta-llama/llama-3.3-70b-instruct:free` | High intelligence |
 | `xiaomi/mimo-v2-flash:free` | Efficient coding |
 
 ---
@@ -99,8 +100,10 @@ Create `~/.claude-code-router/config.json`:
       "api_key": "YOUR_API_KEY_HERE",
       "models": [
         "qwen/qwen3-coder:free",
+        "qwen/qwen3-14b:free",
+        "google/gemini-2.0-flash-exp:free",
         "meta-llama/llama-3.3-70b-instruct:free",
-        "google/gemini-2.0-flash-exp:free"
+        "xiaomi/mimo-v2-flash:free"
       ],
       "transformer": {
         "use": ["openrouter"]
@@ -108,7 +111,7 @@ Create `~/.claude-code-router/config.json`:
     }
   ],
   "Router": {
-    "default": "openrouter,meta-llama/llama-3.3-70b-instruct:free"
+    "default": "openrouter,qwen/qwen3-coder:free"
   }
 }
 ```
