@@ -125,7 +125,7 @@ $configContent = @"
     }
   ],
   "Router": {
-    "default": "openrouter,meta-llama/llama-3.3-70b-instruct:free",
+    "default": "openrouter,xiaomi/mimo-v2-flash:free",
     "background": "",
     "think": "",
     "longContext": "",
