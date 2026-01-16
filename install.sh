@@ -14,55 +14,6 @@ success() { echo -e "${GREEN}[✓] $1${NC}"; }
 warn() { echo -e "${YELLOW}[!] $1${NC}"; }
 fail() { echo -e "${RED}[✗] $1${NC}"; }
 
-# Function for countdown input
-get_input_timeout() {
-    local prompt="$1"
-    local timeout=$2
-    local start_time=$(date +%s)
-    local input=""
-
-    echo -ne "$prompt"
-    
-    while true; do
-        local now=$(date +%s)
-        local elapsed=$((now - start_time))
-        local remaining=$((timeout - elapsed))
-
-        if [ $remaining -le 0 ]; then
-            echo -e "\n"
-            return 1
-        fi
-
-        # Format time
-        local m=$((remaining / 60))
-        local s=$((remaining % 60))
-        local timer=$(printf " [%d:%02d remaining] " $m $s)
-
-        # Show timer and wait for 1 char of input
-        echo -ne "\033[s$timer\033[u"
-        if read -s -n 1 -t 1 char; then
-            if [[ $char == $'\0' || $char == "" ]]; then
-                # Enter pressed
-                echo -e ""
-                echo "$input"
-                return 0
-            elif [[ $char == $'\177' ]]; then
-                # Backspace
-                if [ ${#input} -gt 0 ]; then
-                    input="${input%?}"
-                    echo -ne "\b \b"
-                fi
-            else
-                input+="$char"
-                echo -ne "*"
-            fi
-        fi
-        # Clear timer string area before next loop
-        local spaces=$(printf "%${#timer}s")
-        echo -ne "\033[s$spaces\033[u"
-    done
-}
-
 clear
 header "Claude Code Router (CCR) + OpenRouter Auto-Setup"
 echo -e "Welcome student! Let's get your AI environment ready. 🚀"
@@ -86,18 +37,18 @@ CCR_DIR="$HOME/.claude-code-router"
 mkdir -p "$CCR_DIR"
 success "Config directory set: $CCR_DIR"
 
-# Step 4: API Key with 15-minute countdown
+# Step 4: API Key entry
 header "API KEY CONFIGURATION"
 echo -e "${YELLOW}Get your key from: https://openrouter.ai/keys${NC}"
-echo -e "Note: You have 15 minutes to paste your key before this script times out."
 
 VALID_KEY=false
 while [ "$VALID_KEY" = false ]; do
-    API_KEY=$(get_input_timeout "Paste your OpenRouter API Key (starts with sk-or-v1-): " 900)
+    # Using read for maximum reliability during pasting
+    read -p "Paste your OpenRouter API Key (starts with sk-or-v1-): " API_KEY
     
-    if [ $? -ne 0 ]; then
-        fail "Timeout reached! Script cancelled."
-        exit 1
+    if [ -z "$API_KEY" ]; then
+        warn "API Key cannot be empty."
+        continue
     fi
 
     if [[ ! $API_KEY =~ ^sk-or-v1- ]]; then
@@ -113,27 +64,36 @@ while [ "$VALID_KEY" = false ]; do
     fi
 done
 
-# Step 5: config.json
+# Step 5: config.json (Updated to match latest CCR format)
 cat > "$CCR_DIR/config.json" << EOF
 {
-  "Provider": {
-    "openrouter": {
-      "type": "OpenAIAzure",
-      "model": "xiaomi/mimo-v2-flash:free",
-      "config": {
-        "apiVersion": "2024-10-21",
-        "baseUrl": "https://openrouter.ai/api/v1",
-        "apiKey": "$API_KEY"
+  "LOG": true,
+  "LOG_LEVEL": "debug",
+  "Providers": [
+    {
+      "name": "openrouter",
+      "api_base_url": "https://openrouter.ai/api/v1/chat/completions",
+      "api_key": "$API_KEY",
+      "models": [
+        "qwen/qwen3-coder:free",
+        "qwen/qwen3-14b:free",
+        "google/gemini-2.0-flash-exp:free",
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "xiaomi/mimo-v2-flash:free"
+      ],
+      "transformer": {
+        "use": ["openrouter"]
       }
     }
-  },
+  ],
   "Router": {
-    "default": "openrouter,xiaomi/mimo-v2-flash:free",
+    "default": "openrouter,qwen/qwen3-coder:free",
     "background": "",
     "think": "",
     "longContext": "",
-    "titleGen": "",
-    "searchTool": ""
+    "longContextThreshold": 60000,
+    "webSearch": "",
+    "image": ""
   }
 }
 EOF
