@@ -174,7 +174,7 @@ cat > "$CONFIG_PATH" << EOF
     }
   ],
   "Router": {
-    "default": "openrouter,xiaomi/mimo-v2-flash:free",
+    "default": "openrouter,qwen/qwen3-coder:free",
     "background": "",
     "think": "",
     "longContext": "",
